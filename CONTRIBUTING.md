@@ -1,8 +1,7 @@
 Guidelines for contribution:
 --
 
-- If you want to start work on a very big change, 
-[discuss](https://github.com/SeppeOngena/ugentdocs/discussions) it first
+- The code in this package should be arranged in small chunks selectable with an option (have a look at what's already there).
 - Use [conventional commit](https://www.conventionalcommits.org) messages
 - Use pull requests to contribute code. Pull requests should:
   - Contain a finished, single feature or change
