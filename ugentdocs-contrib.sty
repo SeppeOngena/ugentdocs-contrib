@@ -1,9 +1,43 @@
 \ProvidesExplPackage{ugentdocs-contrib}{2026-10-03}{0.1}
   {Unofficial ugentdocs customizations and extensions}
 
+\bool_new:N \l__ugcontrib_citelinks_bool
+
 \keys_define:nn { ugentdocs-contrib }
 {
+  fullcitationlinks   .bool_set:N = \l__ugcontrib_citelinks_bool ,
 }
 \ProcessKeyOptions [ ugentdocs-contrib ]
+
+\bool_if:NT \l__ugcontrib_citelinks_bool {
+  % Makes the full citation the link (e.g., ``Jekyll & Hyde (1886)'')
+  % instead of just the year
+  % Maintainer: Seppe Ongena
+  \AddToHook { package/biblatex/after }  {
+    % \cite, \parencite, \autocite all route through this macro in authoryear.cbx
+    \renewbibmacro*{cite}{%
+      \iffieldundef{shorthand}
+      {\ifthenelse{\ifnameundef{labelname}\OR\iffieldundef{labelyear}}
+        {\printtext[bibhyperref]{\usebibmacro{cite:label}}%
+          \setunit{\addspace}%
+          \usebibmacro{cite:reinit}}
+        {\printtext[bibhyperref]{%
+            \printnames{labelname}%
+            \setunit{\nameyeardelim}%
+            \usebibmacro{cite:labeldate+extradate}}}}
+      {\usebibmacro{cite:shorthand}}}
+
+    % \textcite
+    \DeclareCiteCommand{\textcite}{}
+    {\printtext[bibhyperref]{%
+        \printnames{labelname}%
+        \addspace\bibopenparen
+        \usebibmacro{cite:labeldate+extradate}%
+        \bibcloseparen}}
+    {\textcitedelim}
+    {\usebibmacro{textcite:postnote}}
+  }
+}
+
 
 }
