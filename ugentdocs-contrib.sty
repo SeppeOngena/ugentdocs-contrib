@@ -1,11 +1,13 @@
 \ProvidesExplPackage{ugentdocs-contrib}{2026-10-03}{0.1}
   {Unofficial ugentdocs customizations and extensions}
 
+\bool_new:N \l__ugcontrib_suppreport_bool
 \bool_new:N \l__ugcontrib_citelinks_bool
 \bool_new:N \l__ugcontrib_pdfmeta_bool
 
 \keys_define:nn { ugentdocs-contrib }
 {
+  supplementary       .bool_set:N = \l__ugcontrib_supplementary_bool ,
   fullcitationlinks   .bool_set:N = \l__ugcontrib_citelinks_bool ,
   ugentdocspdfmeta    .bool_set:N = \l__ugcontrib_pdfmeta_bool ,
 }
@@ -60,4 +62,112 @@
     \endgroup
   }
 }
+\bool_if:NT \l__ugcontrib_supplementary_bool {
+  % Adds supplementary styling (e.g. Figure S1)
+  % Can turn the whole report class into a supplementary information document
+  % if \supplementarymaterial is called in the preamble
+  % Maintainer: Seppe Ongena
+
+  \NewDocumentCommand \supplementarymaterial { } {
+    % Redefine chapters and sections
+    \setcounter{figure}{0}
+    \setcounter{table}{0}
+    \setcounter{section}{0}
+    \let \thefigureWithoutS \thefigure
+    \renewcommand \thefigure { S \thefigureWithoutS }
+    \let \thetableWithoutS \thetable
+    \renewcommand \thetable { S \thetableWithoutS }
+    \ifdefined \c@chapter
+    \renewcommand \thesection
+    { S \ifnum \c@chapter > \z@ \thechapter . \fi \arabic{section} }
+    \else
+    \renewcommand \thesection { S \arabic{section} }
+    \fi
+    % unique hyperref anchors, so links don't jump back to the main text
+    \def \theHfigure  { supp. \thefigure }
+    \def \theHtable   { supp. \thetable }
+    \def \theHsection { supp. \thesection }
+
+    % New dictionary keys
+    \ugentdocsdictset{english}{
+      pages      = Pages,
+      figures    = Figures,
+      tables     = Tables,
+      suppinfo   = Supplementary~information,
+      includedin = Are~included~in~this
+    }
+
+    \ugentdocsdictset{dutch}{
+      pages      = Paginas,
+      figures    = Figuren,
+      tables     = Tabellen,
+      suppinfo   = Supplementaire~informatie,
+      includedin = Zijn~inbegrepen~in~deze
+    }
+
+    \RequirePackage[figure,table]{totalcount}
+
+    % New cover
+    \renewcommand{\@frontcover}{
+      \begin{tikzpicture}[inner~sep=0pt, outer~sep=0pt]
+        \clip (0,0) rectangle (\@PW,\@PH);
+        % Cover body
+        \@coverbody
+      \end{tikzpicture}
+    }
+    \renewcommand{\@coverbody}{
+      \node[anchor=north~west, inner~sep=0pt, text~width=\paperwidth-\@MTLR-\gridunit,
+      minimum~height=22.05cm, align=flush~left] at (\@MTLR,\@HT)
+      {%
+        \raggedright
+        \begin{spacing}{2.5}
+          {\fontsize{25}{30}\selectfont\color{covertitlecolor}\bfseries
+            \MakeUppercase{\uline{\@title}}}
+        \end{spacing}
+
+        \vskip 1em
+
+        {\fontsize{20}{24}\selectfont\color{covertitlecolor}
+          \MakeUppercase{\@subtitle}}
+
+        \vskip 2em
+
+        \begingroup\color{coverdatacolor}
+        {\fontsize{16}{20}\selectfont\translatekey{suppinfo}}
+
+        \ifseqempty{authors}{
+          \vskip 10em
+        }{
+          \vskip 5em
+          {\fontsize{14}{17}
+          \__ugentdocs_printauthorlist:}
+          \vskip 5em
+        }
+
+
+        \ifseqempty{affiliations}{}{
+          {\fontsize{10}{12}\selectfont
+            \__ugentdocs_printaffiliationlist:}
+          \vskip 2 em
+        }
+        \endgroup
+      };
+      \node[anchor=south~west, inner~sep=0pt, text~width=\paperwidth-\@MTLR-\gridunit,
+       align=flush~left] at (\@MTLR,\gridunit)
+        {%
+        \__ugentdocs_printauthorfootnote:{}
+
+        \begingroup
+        \let \thefootnote \relax
+        \long \def \@makefntext ####1 { \parindent \z@ \noindent ####1 }
+        \footnotetext{
+          \par \ztotpages{}~\translatekey[lowercase]{pages},
+          {}~\totalfigures{}~\translatekey[lowercase]{figures}
+          \translatekey{andlist}~\totaltables{}~\translatekey[lowercase]{tables}
+          {}~\translatekey[lowercase]{includedin}~\translatekey[lowercase]{suppinfo}.
+        }
+        \endgroup
+      };
+    }
+  }
 }
