@@ -1,0 +1,29 @@
+Guidelines for contribution:
+--
+
+- If you want to start work on a very big change, 
+[discuss](https://github.com/SeppeOngena/ugentdocs/discussions) it first
+- Use [conventional commit](https://www.conventionalcommits.org) messages
+- Use pull requests to contribute code. Pull requests should:
+  - Contain a finished, single feature or change
+  - Be up-to-date with the main branch
+  - Be compatible with the most recent `ugentdocs` version
+- Use of LLMs for code generation or debugging is permitted, HOWEVER:
+  - You should know how your code works in detail, not the grand gist of it
+  - Code should be of high quality (less is more) and follow the style below
+  - Pull requests with AI-generated descriptions will be rejected
+- Style:
+  - Code is spelled following LaTeX conventions (i.e., American English)
+  - Documentation is spelled following Oxford English
+  - Use two spaces for tabs
+  - Use `\@macro` form for internal or customization usage
+  - Use `\macro` form for commands that can be called in main.tex files by users
+  - Remove trailing spaces
+  - Add empty lines where needed, space out your code for readability.
+  - Use K&R bracing style (although I'm not super consistent myself)
+  - Limit line length to 80 characters (ideally), max 100
+- Use LaTeX3 as much as possible and correctly, e.g.:
+  - Use a \bool_new instead of \newif.
+  - Declare your variables before you use them
+  - Use `\scope_@@_varname_vartype`, where `scope` is `l` for local and `g` for global.
+  - Use  `\@@_csname` or `\_@@_csname` (for private control sequences). 
