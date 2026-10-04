@@ -2,10 +2,12 @@
   {Unofficial ugentdocs customizations and extensions}
 
 \bool_new:N \l__ugcontrib_citelinks_bool
+\bool_new:N \l__ugcontrib_pdfmeta_bool
 
 \keys_define:nn { ugentdocs-contrib }
 {
   fullcitationlinks   .bool_set:N = \l__ugcontrib_citelinks_bool ,
+  ugentdocspdfmeta    .bool_set:N = \l__ugcontrib_pdfmeta_bool ,
 }
 \ProcessKeyOptions [ ugentdocs-contrib ]
 
@@ -40,4 +42,22 @@
 }
 
 
+\bool_if:NT \l__ugcontrib_pdfmeta_bool{
+  % Adds a pdf creator metadata
+  % Maintainer: Seppe Ongena
+  \hypersetup { pdfcreator = { LaTeX~with~the~ugentdocs~package } }
+}
+
+\NewDocumentCommand \addugentdocsfootnote { }{
+  % Adds a footnote for the article class
+  % Maintainer: Seppe Ongena
+  \bool_if:NT \l__ugcontrib_pdfmeta_bool {
+    \begingroup
+    \let \thefootnote \relax
+    \long \def \@makefntext ##1 { \parindent \z@ \noindent ##1 }
+    \footnotetext
+    { Typeset~using~the~\textrm{\LaTeX{}}~\texttt{ugentdocs}~package. }
+    \endgroup
+  }
+}
 }
