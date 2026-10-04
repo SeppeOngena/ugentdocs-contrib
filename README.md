@@ -28,7 +28,7 @@ Copy the `ugentdocs-contrib.sty` file into your document folder or clone the rep
 and use the [l3build](https://ctan.org/pkg/l3build) package:
 
     git clone https://github.com/SeppeOngena/ugentdocs-contrib.git
-    cd ugentdocs
+    cd ugentdocs-contrib
     l3build install
 
 This installs the current version for your user account.
