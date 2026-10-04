@@ -1,6 +1,5 @@
 <h1 align="center">The ugentdocs-contrib $\LaTeX$ package</h1>
 <h3 align="center">A curated collection of customizations and extensions for the ugentdocs package</h3>
----
 
 Overview
 --
