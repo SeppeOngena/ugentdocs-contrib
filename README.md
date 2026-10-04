@@ -1,23 +1,31 @@
 <h1 align="center">The ugentdocs-contrib $\LaTeX$ package</h1>
-<h3 align="center">A curated collection of customizations and extensions for the ugentdocs package</h3>
+<h3 align="center">A curated collection of community-built customizations and extensions for the ugentdocs package</h3>
 
 Overview
 --
+
+This package is aimed at extensions or customizations that are not part of the official house style 
+(and thus find no place in the `ugentdocs` package) but might be commonly used.
+This can include alternative styles (e.g., supplementary information)
+or code for specific packages not required by `ugentdocs` (e.g., BibLaTeX).
 
 This package provides a `ugentdocs-contrib.sty` file, which can be used in your document through
 
     \usepackage[<options>]{ugentdocs-contrib}
     
-Currently implemented options for extensions / customizations are:
+Currently available options for extensions / customizations are:
 
-- `supplementary`: Adds supplementary information styling for the `ugentreport` (or other) classes.
+- `supplementary`: Adds supplementary information styling for `ugentreport` (or other classes),
+   adding an "S"-prefix, e.g., "Figure S1".
    Provides `\supplementarymaterial`, which can be used instead of `\appendix`, 
-   or in the preamble (before `\begin{document}`), which overrides the cover page.
+   or in the preamble (before `\begin{document}`), which overrides the cover page as well.
 -  `fullcitationlinks`: by default, BibLaTeX only uses the year of a citation as a link.
    This option sets the whole citation as a link.
--  `ugentdocspdfmeta`: Adds ``LaTeX with the ugentdocs package'' as PDF creator to the metadata,
-    and provides a `\addugentdocsfootnote`, which adds the same text as a footnote.
--  `rotatedpage`: Adds a new environment of the same name with support for the `thumbs` and `crop` package
+-  `ugentdocspdfmeta`: Adds "LaTeX with the ugentdocs package" to the PDF creator metadata field,
+    and provides a `\addugentdocsfootnote`, which adds the same text as a footnote when used.
+-  `rotatedpage`: Adds a new environment of the same name with support for the `thumbs` and `crop` package.
+    This allows landscape pages while keeping the thumbs and header/footer properly oriented.
+    The rotation is disabled when the cameraready option is set.
 
 Installation
 --
