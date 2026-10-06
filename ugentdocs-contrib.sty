@@ -111,6 +111,13 @@
   % if \supplementarymaterial is called in the preamble
   % Maintainer: Seppe Ongena
 
+  \providecommand*\@journal{}
+  \providecommand*\journal[1]{\gdef\@journal{#1}}
+  \providecommand*\@doi{}
+  \providecommand*\doi[1]{\gdef\@doi{#1}}
+  \providecommand\@grants{}
+  \providecommand\grants[1]{\gdef\@grants{#1}}
+
   \NewDocumentCommand \supplementarymaterial { } {
     % Redefine chapters and sections
     \setcounter{figure}{0}
