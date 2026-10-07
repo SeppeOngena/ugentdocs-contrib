@@ -65,43 +65,17 @@
   }
 }
 
-\bool_new:N \l__ugcontrib_rotate_bool
 \bool_if:NT \l__ugcontrib_rotatedpage_bool {
-  % Rotates a page 90 degrees whilst keeping header and footer normally oriented
-  % i.e., header and footer along the short edge.
-  % Rotation is skipped in camera-ready mode, if the class provides it.
+  % Landscape pages: rotated in the viewer for digital output (pdflscape),
+  % body-only rotation for camera-ready print (lscape).
   % Maintainer: Seppe Ongena
-  \newenvironment{rotatedpage}[1][90]{%
-    \bool_set_true:N \l__ugcontrib_rotate_bool
-    \bool_if_exist:NT \l__ugentdocs_cameraready_bool {
-      \bool_if:NT \l__ugentdocs_cameraready_bool {
-        \bool_set_false:N \l__ugcontrib_rotate_bool
-      }
-    }
-    \bool_if:NT \l__ugcontrib_rotate_bool {
-      \clearpage
-      \begingroup
-      \ifdefined\pagewidth
-      \pagewidth=\paperheight
-      \pageheight=\paperwidth
-      \else
-      \pdfpagewidth=\paperheight
-      \pdfpageheight=\paperwidth
-      \fi
-      \AtBeginShipoutNext{%
-        \setbox\AtBeginShipoutBox=%
-        \hbox to\paperheight{\hss
-          \vbox to\paperwidth{\vfil
-            \hspace{-1.5in}\vspace{1.75in}\rotatebox{#1}{\usebox\AtBeginShipoutBox}%
-            \vfil}%
-          \hss}%
-      }%
-    }
-  }{%
-    \bool_if:NT \l__ugcontrib_rotate_bool {
-      \clearpage
-      \endgroup
-    }
+  \bool_lazy_and:nnTF
+  { \bool_if_exist_p:N \l__ugentdocs_cameraready_bool }
+  { \l__ugentdocs_cameraready_bool }
+  {
+    \RequirePackage{lscape}
+  }{
+    \RequirePackage{pdflscape}
   }
 }
 
