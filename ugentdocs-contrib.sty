@@ -5,6 +5,7 @@
 \bool_new:N \l__ugcontrib_citelinks_bool
 \bool_new:N \l__ugcontrib_pdfmeta_bool
 \bool_new:N \l__ugcontrib_rotatedpage_bool
+\bool_new:N \l__ugcontrib_sectiontitlestyle_bool
 
 \keys_define:nn { ugentdocs-contrib }
 {
@@ -12,6 +13,8 @@
   fullcitationlinks   .bool_set:N = \l__ugcontrib_citelinks_bool ,
   ugentdocspdfmeta    .bool_set:N = \l__ugcontrib_pdfmeta_bool ,
   rotatedpage         .bool_set:N = \l__ugcontrib_rotatedpage_bool ,
+  sectiontitlestyle   .bool_set:N = \l__ugcontrib_sectiontitlestyle_bool,
+
 }
 \ProcessKeyOptions [ ugentdocs-contrib ]
 
@@ -199,5 +202,215 @@
         \endgroup
       };
     }
+  }
+}
+
+\bool_if:NT \l__ugcontrib_sectiontitlestyle_bool {
+  \providecommand \sectionname { Section }
+  \addto \captionsenglish { \renewcommand \sectionname { Section } }
+  \addto \captionsdutch   { \renewcommand \sectionname { Sectie } }
+  \renewcommand{\@titlestylesection}{
+    \exp_args:Nx \str_case:nnF { \l__ugentdocs_chaptitlestyle_tl } {
+      { plain } {
+        \titleformat{\section}
+        [block] % shape
+        {\fontsize{16}{19} \selectfont \color{titlecolor} \bfseries } % format
+        {\thesection. \ } % the label
+        { 0ex } %separator space
+        {\MakeUppercase{\uline{##1}} } %before code
+        [\@addthumb] %after code
+
+        \titleformat{name=\section,numberless}
+        [block] % shape
+        {\fontsize{16}{19} \selectfont \color{titlecolor} \bfseries } % format
+        {} % the label
+        {0ex}%separator space
+        {\uline{\MakeUppercase{##1}}} %before code
+
+        % Change the spacing above the chapter. This is left - above - below
+        %\titlespacing*{\section}{0pt}{-3em}{12pt}
+
+        \renewcommand{\@titlestyleappendix}{ % Adds "appendix" to title
+          \titleformat{\section}
+          [display] % shape
+          {\fontsize{18}{22}\selectfont\color{titlecolor}} % format
+          {\MakeUppercase{\sectiontitlename\ \thesection}} % the label
+          {-2ex} %separator space
+          {\fontsize{24}{32}\selectfont\bfseries\raggedright\MakeUppercase{%
+              \uline{####1}}} %before code
+          [\@addthumb] %after code
+        }
+      }
+      { fancy } {
+        \titleformat{\section}
+        [display] % shape
+        {}{}{0pt} % format, label, sep (unused: box+number are drawn manually)
+        {%
+          \noindent
+          \begin{tikzpicture}[remember~picture]
+            \useasboundingbox (0,0) rectangle (\linewidth, -3\gridunit);
+
+            % Number coloured box: top at the current position, right edge at the page edge (+bleed)
+            \node[fill=titlecolor, minimum~height=3\gridunit, minimum~width=
+            4\gridunit+\the\hoffset, inner~sep=0pt, anchor=north~east]
+            (numbox)
+            at ([xshift=\the\hoffset] 0,0 -| current~page.east) {};
+
+            % Section number
+            \node[white, font=\fontsize{70}{70}\selectfont\bfseries, anchor=center]
+            at ([xshift=1.5\gridunit]numbox.west |- numbox.center) {\thesection};
+
+            % Section name
+            \node[white, font=\bfseries\normalsize, rotate=90, anchor=center, inner~sep=2pt]
+            at ([xshift=3.5\gridunit]numbox.west |- numbox.center) {\sectionname};
+
+          \end{tikzpicture}%
+          \group_begin:
+          \skip_set:Nn \topsep    { \dim_eval:n { \topsep } }
+          \skip_set:Nn \partopsep { \dim_eval:n { \partopsep } }
+          \skip_set:Nn \parskip   { \dim_eval:n { \parskip } }
+          \vspace*{10pt}
+          \begin{flushright}
+            \color{titlecolor}\huge\bfseries##1%
+          \end{flushright}%
+          \vspace*{-10pt}%
+          {\color{titlecolor}\rule{\textwidth}{1pt}}
+          \group_end:
+        }
+        [\@addthumb] %after code
+
+        \titleformat{name=\section,numberless}
+        [block]
+        {}{}{0pt}
+        {%
+          \group_begin:
+          \skip_set:Nn \topsep    { \dim_eval:n { \topsep } }
+          \skip_set:Nn \partopsep { \dim_eval:n { \partopsep } }
+          \skip_set:Nn \parskip   { \dim_eval:n { \parskip } }
+          \begin{flushright}
+            \color{titlecolor}\huge\bfseries##1%
+          \end{flushright}%
+          \vspace*{-10pt}%
+          {\color{titlecolor}\rule{\textwidth}{1pt}}
+          \group_end:
+        }
+
+        \titlespacing*{\section}{0pt}{0pt}{20pt}
+
+        % No thumb on section page
+        \bool_if:NT \l__ugentdocs_thumbs_bool {
+          \apptocmd{\@addthumb}{\stopthumb}{}{}
+          \AddToHook{shipout/foreground}{\continuethumb}
+        }
+
+      }
+      { fancycompact} {
+        \titleformat{\section}
+        [display] % shape
+        {}{}{0pt} % format, label, sep (unused: box+number are drawn manually)
+        {%
+          \noindent
+          \begin{tikzpicture}[remember~picture]
+            \useasboundingbox (0,0) rectangle (\linewidth, -3\gridunit);
+
+            % Number coloured box: top at the current position, right edge at the page edge (+bleed)
+            \node[fill=titlecolor, minimum~height=3\gridunit, minimum~width=
+            4\gridunit+\the\hoffset, inner~sep=0pt, anchor=north~east]
+            (numbox)
+            at ([xshift=\the\hoffset] 0,0 -| current~page.east) {};
+
+            % Section number
+            \node[white, font=\fontsize{70}{70}\selectfont\bfseries, anchor=center]
+            at ([xshift=1.5\gridunit]numbox.west |- numbox.center) {\thesection};
+
+            % Section name
+            \node[white, font=\bfseries\normalsize, rotate=90,
+            anchor=center,inner~sep=2pt]
+            at ([xshift=3.5\gridunit]numbox.west |- numbox.center) {\sectionname};
+
+            % Section title
+            \node[titlecolor, font=\huge\bfseries,
+            anchor=south~east, align=flush~right, text~width=0.85\textwidth]
+            at ([xshift=-10pt,yshift=10pt]numbox.west |- numbox.south) {##1};
+
+            % Rule
+            \draw[titlecolor, line~width=1pt]
+            ([xshift=-\the\hoffset]current~page~text~area.west |- numbox.south)
+            -- (numbox.south~east);
+          \end{tikzpicture}%
+        }
+        [\@addthumb] %after code
+
+        \titleformat{name=\section,numberless}
+        [block]
+        {}{}{0pt}
+        {%
+          \group_begin:
+          \skip_set:Nn \topsep    { \dim_eval:n { \topsep } }
+          \skip_set:Nn \partopsep { \dim_eval:n { \partopsep } }
+          \skip_set:Nn \parskip   { \dim_eval:n { \parskip } }
+          \begin{flushright}
+            \color{titlecolor}\huge\bfseries##1%
+          \end{flushright}%
+          \vspace*{-10pt}%
+          {\color{titlecolor}\rule{\textwidth}{1pt}}
+          \group_end:
+        }
+
+        \titlespacing*{\chapter}{0pt}{0pt}{20pt}
+
+        % No thumb on chapter page
+        \bool_if:NT \l__ugentdocs_thumbs_bool {
+          \apptocmd{\@addthumb}{\stopthumb}{}{}
+          \AddToHook{shipout/foreground}{\continuethumb}
+        }
+      }
+      { uantwerpen } {
+        % Adapted from uantwerpendocs v4.12, (C) Walter Daems, LPPL 1.3c
+        \titleformat { \section } [display]
+        { \normalfont \raggedleft }
+        {
+          \makebox[0pt][l]{ \color{titlecolor} \rule[-0.4em]{10cm}{1.8em} }
+          \textcolor{white}{ \LARGE \bfseries {}~\sectionname~ }
+          \raisebox{-24pt}{ \@@_ua_sec_num: }
+          \hspace*{-8pt}
+        }
+        { 0pt }
+        { \huge \bfseries \color{titlecolor} \rule[-0.5ex]{0pt}{2.6ex} ~ ##1 }
+        [ { \titlerule[1pt] } ]
+        \titleformat { name = \section , numberless } [block]
+        { \normalfont \raggedleft \LARGE \bfseries \color{titlecolor} }
+        { } { 0pt }
+        { \rule[-0.5ex]{0pt}{2.6ex} ~ ##1 }
+        [ { \titlerule[1pt] } ]
+        \titlespacing* { \section } { 0pt } { 1ex } { 5pt }
+      }
+      { legacyplain }{
+        \titleformat{\section}[block]
+        {\Large\bfseries}{}{20pt}{%
+          \makebox[0pt][r]{\@legacychapshape{\thesection}{white}{\fontsize{16}{18}\selectfont}}%
+          ##1%
+        }[\@addthumb]
+
+        \titleformat{name = \section, numberless}[block]
+        {\Large\bfseries}{}{0pt}{%
+          \makebox[0pt][r]{\@legacychapshape{0}{ugent@main}{\large}}%
+          ##1%
+        }
+        %\titlespacing*{\section}{0pt}{-20pt}{10pt}
+      }
+    }{
+      \PackageError{ugentdocs}
+      { The~section~styling~specified~is~not~implemented }
+      { See~the~ugentdocs~manual. }
+    }
+  }
+  \cs_new_protected:Npn \@@_ua_sec_num: {
+    \begin{tikzpicture}
+      [ every~node/.style = { font = \fontsize{72}{72} \selectfont \bfseries } ]
+      \foreach \a in { 0, 5, ..., 355 }
+      { \node [white] at ( { 0.025 * cos(\a) } , { 0.025 * sin(\a) } ) { \thesection }; }
+      \node [titlecolor!50] at (0,0) { \thesection };
+    \end{tikzpicture}
   }
 }
