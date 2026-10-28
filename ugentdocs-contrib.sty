@@ -105,16 +105,18 @@
     \let \theequationWithoutS \theequation
     \renewcommand \theequation { S \theequationWithoutS }
     \ifdefined \c@chapter
-    \renewcommand \thesection
-    { S \ifnum \c@chapter > \z@ \thechapter . \fi \arabic{section} }
+      \renewcommand \thechapter { S\arabic{chapter} }
+      \renewcommand \thesection
+        { \ifnum \c@chapter > \z@ \thechapter . \else S\fi \arabic{section} }
     \else
-    \renewcommand \thesection { S \arabic{section} }
+      \renewcommand \thesection { S\arabic{section} }
     \fi
     % unique hyperref anchors, so links don't jump back to the main text
     \def \theHfigure   { supp. \thefigure }
     \def \theHtable    { supp. \thetable }
     \def \theHsection  { supp. \thesection }
     \def \theHequation { supp. \theequation }
+    \def \theHchapter  { supp. \thechapter }
 
     % New dictionary keys
     \ugentdocsdictset{english}{
