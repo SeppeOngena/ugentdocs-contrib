@@ -26,6 +26,8 @@ Currently available options for extensions / customizations are:
 -  `rotatedpage`: Adds a new environment of the same name with support for the `thumbs` and `crop` package.
     This allows landscape pages while keeping the thumbs and header/footer properly oriented.
     The rotation is disabled when the cameraready option is set.
+-  `sectiontitlestyle`: Adjust section style to match the current title style. Supports all of the 5 title styles.
+    Can be used for chapterless documents, e.g., in a supplementary information.
 
 Installation
 --
